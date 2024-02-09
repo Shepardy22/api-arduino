@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import React from "react";
 
 import { initializeApp } from "firebase/app";
@@ -44,7 +44,18 @@ export default function Home() {
       console.log(comando);
     });
 
+
     
+    //useEffect para buscar o comando no banco de dados quando a página carregar
+
+    useEffect(() => {
+      getComando().then((comando) => {
+        setComando(comando);
+      });
+    }
+    , []);
+
+  
   //setar o comando no banco de dados como ligar
 
   const SetComandoLigar = async () => {
@@ -66,6 +77,8 @@ export default function Home() {
       <button onClick={SetComandoLigar}>Ligar</button>
 
       <button onClick={setComandoDesligar}>Desligar</button>
+
+      {comando && <p>Comando: {comando}</p>}
       
     </div>
   );
