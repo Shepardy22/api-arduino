@@ -3,8 +3,8 @@ import { useState } from "react";
 import React from "react";
 
 import { initializeApp } from "firebase/app";
-//import getfirestore from "firebase/firestore";
-import { getFirestore, collection, getDocs, setDoc } from "firebase/firestore/lite";
+
+import {  getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 
 
 const firebaseApp = initializeApp({
@@ -26,16 +26,35 @@ export default function Home() {
   const docRef = doc(db, "comando", "crg58kSUnAonCiHu4P6g");
 
 
+  ///////////////////////////////////////
+  //funcao assincrona para buscar o comando no banco de dados
+  const getComando = async () => {
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+        console.log("Document data:", docSnap.data());
+        return docSnap.data().comando;
+    } else {
+        // doc.data() will be undefined in this case
+        console.log("No such document!");
+    }
+  }
+  ///////////////////////////////////////
+
+    getComando().then((comando) => {
+      console.log(comando);
+    });
+
+    
   //setar o comando no banco de dados como ligar
 
-  const setComandoLigar = async () => {
+  const SetComandoLigar = async () => {
     await setDoc(docRef, {comando: "ligar"});
-    
+    setComando("ligar");
   }
 
   const setComandoDesligar = async () => {
     await setDoc(docRef, {comando: "desligar"});
-    
+    setComando("desligar"); 
   }
 
 
@@ -44,7 +63,7 @@ export default function Home() {
       <h1>API Arduino</h1>
       <p>API para controle de dispositivos eletrônicos</p>
 
-      <button onClick={setComandoLigar}>Ligar</button>
+      <button onClick={SetComandoLigar}>Ligar</button>
 
       <button onClick={setComandoDesligar}>Desligar</button>
       
